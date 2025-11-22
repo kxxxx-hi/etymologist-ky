@@ -1,0 +1,531 @@
+"use client";
+
+import React, { useState, useMemo } from 'react';
+import { BookOpen, Scale, Search, GitBranch, Feather, Globe, Lightbulb, ArrowRight } from 'lucide-react';
+
+// ==========================================
+// 1. THE DATA SOURCE
+// ==========================================
+
+const VOCABULARY = [
+  {
+    id: "corollary",
+    word: "Corollary",
+    root: "Corona (Crown) -> Corolla (Small garland)",
+    etymology: "Originally a 'gratuity' (money for a garland) given to actors. Now, a 'bonus truth' that follows a main proof.",
+    vibe: "A freebie; a bonus deduction.",
+    sentence: "The chaotic traffic was a corollary of the broken traffic light.",
+    synonyms: ["Consequence", "Result", "Deduction"],
+    italian: "Corolla (botanical ring), Corona (Crown)",
+  },
+  {
+    id: "mordant",
+    word: "Mordant",
+    root: "Mordere (To bite)",
+    etymology: "From the idea of biting. In dyeing, it bites the color into cloth. In wit, it bites the feelings.",
+    vibe: "Sharp, biting, incisive.",
+    sentence: "His mordant wit made everyone laugh, but left a sting.",
+    synonyms: ["Caustic", "Incisive", "Trenchant"],
+    italian: "Mordere (to bite), Mordente (dye fixative / grit)",
+  },
+  {
+    id: "refractory",
+    word: "Refractory",
+    root: "Frangere (To break) -> Refringere (Break back)",
+    etymology: "Like a wave breaking against a wall. Resisting by breaking the force applied to it.",
+    vibe: "The Wall. Stubborn resistance.",
+    sentence: "The refractory infection did not respond to antibiotics.",
+    synonyms: ["Intractable", "Unmanageable", "Rebellious"],
+    italian: "Frangere (to break), Refrattario",
+  },
+  {
+    id: "pertinacious",
+    word: "Pertinacious",
+    root: "Tenere (To hold) -> Pertinax (Holding thoroughly)",
+    etymology: "Refusing to let go. Holding on with a vice grip.",
+    vibe: "The Bulldog. Relentless determination.",
+    sentence: "The pertinacious journalist refused to stop asking questions.",
+    synonyms: ["Dogged", "Tenacious", "Relentless"],
+    italian: "Tenace (Tenacious), Tenere (To hold)",
+  },
+  {
+    id: "vanquish",
+    word: "Vanquish",
+    root: "Vincere (To win/conquer)",
+    etymology: "To win completely. Unlike conquer (seeking land), this is about crushing the opposition.",
+    vibe: "Total Victory. Making the enemy disappear.",
+    sentence: "She finally vanquished her fear of public speaking.",
+    synonyms: ["Crush", "Overcome", "Subjugate"],
+    italian: "Vincere (To win), Vittoria (Victory)",
+  },
+  {
+    id: "demur",
+    word: "Demur",
+    root: "Mora (Delay)",
+    etymology: "From the legal 'demurrer' (a pause to argue). It is not a refusal, but a hesitation.",
+    vibe: "The Pause Button. 'Wait a minute...'",
+    sentence: "They wanted to leave immediately, but I demurred, citing the weather.",
+    synonyms: ["Hesitate", "Object", "Vacillate"],
+    italian: "Dimorare (To dwell/stay), Mora (Delay)",
+  },
+  {
+    id: "rehash",
+    word: "Rehash",
+    root: "Hacher (To chop with an axe)",
+    etymology: "Literally to re-cook chopped leftovers. implies nothing new is added.",
+    vibe: "Stale leftovers. Tired repetition.",
+    sentence: "Let's not rehash the same argument we had last week.",
+    synonyms: ["Recycle", "Reiterate"],
+    italian: "Ascia (Axe - related root)",
+  },
+  {
+    id: "equivocal",
+    word: "Equivocal",
+    root: "Aequus (Equal) + Vox (Voice)",
+    etymology: "Equal voice. Two meanings speaking with equal volume, making it impossible to choose.",
+    vibe: "A Tie Game. Ambiguous on purpose.",
+    sentence: "His answer was equivocal, satisfying neither side.",
+    synonyms: ["Ambiguous", "Evasive", "Noncommittal"],
+    italian: "Equivoco (Misunderstanding/Ambiguous)",
+  },
+  {
+    id: "impute",
+    word: "Impute",
+    root: "Putare (To reckon/calculate/prune)",
+    etymology: "To enter into the account. Originally financial, now assigning cause or blame.",
+    vibe: "Moral Accounting. 'I calculate this is your fault.'",
+    sentence: "I impute his silence to shyness rather than arrogance.",
+    synonyms: ["Attribute", "Ascribe", "Assign"],
+    italian: "Imputare (To charge/accuse)",
+  },
+  {
+    id: "calumny",
+    word: "Calumny",
+    root: "Calvi (To deceive/trick)",
+    etymology: "A false accusation meant to destroy a reputation. Roman slanderers were branded with a 'K'.",
+    vibe: "Weaponized Lying. A little breeze that becomes a storm.",
+    sentence: "He was the victim of a vicious calumny spread by his rivals.",
+    synonyms: ["Slander", "Libel", "Defamation"],
+    italian: "Calunnia (Slander)",
+  },
+  {
+    id: "ascribe",
+    word: "Ascribe",
+    root: "Scribere (To write)",
+    etymology: "To write someone's name next to a deed or work.",
+    vibe: "The Writer. Subjective assignment of credit.",
+    sentence: "Scholars ascribe this poem to Homer.",
+    synonyms: ["Attribute", "Credit"],
+    italian: "Scrivere (To write), Ascrivere",
+  },
+  {
+    id: "attribute",
+    word: "Attribute",
+    root: "Tribuere (To give/assign)",
+    etymology: "To allot or giveaway credit/cause.",
+    vibe: "The Giver. Logical cause-and-effect.",
+    sentence: "We attribute the crash to a software bug.",
+    synonyms: ["Ascribe", "Impute"],
+    italian: "Attribuire",
+  },
+  {
+    id: "atavism",
+    word: "Atavism",
+    root: "Atavus (Great-great-great-grandfather)",
+    etymology: "A trait skipping generations to reappear. A 'ghost in the DNA'.",
+    vibe: "The Throwback. Reverting to the primitive.",
+    sentence: "The mob's violence was a terrifying display of atavism.",
+    synonyms: ["Reversion", "Regression"],
+    italian: "Avo (Ancestor)",
+  },
+  {
+    id: "corroborate",
+    word: "Corroborate",
+    root: "Robur (Oak/Strength)",
+    etymology: "To make strong like oak. Adding structural support to a story.",
+    vibe: "The Oak. Muscle for an argument.",
+    sentence: "The fingerprints corroborated the witness's testimony.",
+    synonyms: ["Confirm", "Verify", "Substantiate"],
+    italian: "Corroborare (Strengthen), Robusto",
+  },
+  {
+    id: "vitriolic",
+    word: "Vitriolic",
+    root: "Vitreus (Glass) -> Vitriol (Sulfuric Acid)",
+    etymology: "Like acid. It burns and corrodes.",
+    vibe: "Sulfuric Acid. Pure hate.",
+    sentence: "The divorce proceedings turned vitriolic.",
+    synonyms: ["Acrimonious", "Virulent"],
+    italian: "Vetro (Glass)",
+  },
+  {
+    id: "discursive",
+    word: "Discursive",
+    root: "Currere (To run)",
+    etymology: "Running to and fro. Covering ground comprehensively but wandering.",
+    vibe: "The Runner. Winding but connected.",
+    sentence: "His discursive speech covered politics, art, and fishing.",
+    synonyms: ["Rambling", "Digressive", "Meandering"],
+    italian: "Correre (To run), Discorrere (To converse)",
+  },
+  {
+    id: "desultory",
+    word: "Desultory",
+    root: "Salire (To jump)",
+    etymology: "From Roman circus riders jumping between horses. Lacking focus.",
+    vibe: "The Jumper. Random and lazy.",
+    sentence: "She made a desultory attempt to clean her room.",
+    synonyms: ["Aimless", "Haphazard"],
+    italian: "Salire (To go up/mount)",
+  },
+  {
+    id: "hamper",
+    word: "Hamper",
+    root: "Hamble (To mutilate/shackle)",
+    etymology: "To tangle or shackle legs so movement is clumsy.",
+    vibe: "The Net/Shackle. Entangled movement.",
+    sentence: "The heavy snow hampered the rescue efforts.",
+    synonyms: ["Impede", "Encumber"],
+    italian: "N/A",
+  },
+  {
+    id: "hinder",
+    word: "Hinder",
+    root: "Hind (Back/Behind)",
+    etymology: "To keep back or drag rearward.",
+    vibe: "The Wall. Kept in the rear.",
+    sentence: "A lack of funding hindered the project's progress.",
+    synonyms: ["Obstruct", "Block"],
+    italian: "N/A",
+  },
+  {
+    id: "petulant",
+    word: "Petulant",
+    root: "Petere (To seek/attack)",
+    etymology: "Aggressively seeking attention. Rushing at people with demands.",
+    vibe: "The Toddler. Bratty and demanding.",
+    sentence: "The petulant CEO threw his coffee because it was cold.",
+    synonyms: ["Peevish", "Sulky", "Bratty"],
+    italian: "Competere (To compete - seek together)",
+  },
+  {
+    id: "exacerbate",
+    word: "Exacerbate",
+    root: "Acer (Sharp/Bitter)",
+    etymology: "To make thoroughly bitter. Pouring lemon on a cut.",
+    vibe: "Making PROBLEMS worse.",
+    sentence: "Yelling will only exacerbate the argument.",
+    synonyms: ["Aggravate", "Worsen"],
+    italian: "Aceto (Vinegar - sour)",
+  },
+  {
+    id: "exasperate",
+    word: "Exasperate",
+    root: "Asper (Rough)",
+    etymology: "To roughen up. Like rubbing skin with sandpaper.",
+    vibe: "Driving PEOPLE crazy.",
+    sentence: "His constant whistling exasperated the teacher.",
+    synonyms: ["Infuriate", "Annoy"],
+    italian: "Aspro (Sour/Rough)",
+  },
+  {
+    id: "recondite",
+    word: "Recondite",
+    root: "Condere (To store/hide)",
+    etymology: "Buried deep in a library.",
+    vibe: "The Scholar. Hidden by depth/complexity.",
+    sentence: "He enjoyed recondite discussions on 12th-century logic.",
+    synonyms: ["Abstruse", "Esoteric"],
+    italian: "Nascondere (To hide)",
+  },
+  {
+    id: "arcane",
+    word: "Arcane",
+    root: "Arca (Chest/Box)",
+    etymology: "Locked in a box. Known only to initiates.",
+    vibe: "The Mystic. Hidden by secrecy.",
+    sentence: "The arcane rules of the secret society.",
+    synonyms: ["Mysterious", "Secret"],
+    italian: "Arcano",
+  },
+  {
+    id: "obscure",
+    word: "Obscure",
+    root: "Obscurus (Dark/Covered)",
+    etymology: "Covered by shadow. Hard to see.",
+    vibe: "The Shadow. Hidden by darkness.",
+    sentence: "An obscure poet nobody reads.",
+    synonyms: ["Unclear", "Murky"],
+    italian: "Oscuro",
+  }
+];
+
+// ==========================================
+// 2. THE COMPARISONS
+// ==========================================
+
+const COMPARISONS = [
+  {
+    id: "hamper-hinder",
+    title: "Hamper vs. Hinder",
+    icon: "⛓️",
+    description: "Clumsiness vs. Direction",
+    pair: [
+      { wordId: "hamper", role: "The Net", logic: "Entanglement. 'I can move, but it's clumsy.'" },
+      { wordId: "hinder", role: "The Wall", logic: "Position. 'I am being kept back/behind.'" }
+    ]
+  },
+  {
+    id: "refractory-pertinacious",
+    title: "Refractory vs. Pertinacious",
+    icon: "🧱",
+    description: "Breaking vs. Holding",
+    pair: [
+      { wordId: "refractory", role: "The Wall", logic: "Breaking back. 'I resist your control.'" },
+      { wordId: "pertinacious", role: "The Bulldog", logic: "Holding on. 'I won't let go of this idea.'" }
+    ]
+  },
+  {
+    id: "vitriolic-mordant",
+    title: "Vitriolic vs. Mordant",
+    icon: "🧪",
+    description: "Acid vs. Teeth",
+    pair: [
+      { wordId: "vitriolic", role: "Sulfuric Acid", logic: "Burns and destroys. Pure hate." },
+      { wordId: "mordant", role: "Sharp Teeth", logic: "Bites and stings. Witty and intellectual." }
+    ]
+  },
+  {
+    id: "exacerbate-exasperate",
+    title: "Exacerbate vs. Exasperate",
+    icon: "😤",
+    description: "Problems vs. People",
+    pair: [
+      { wordId: "exacerbate", role: "The Acid", logic: "Makes PROBLEMS worse (intensifies)." },
+      { wordId: "exasperate", role: "The Sandpaper", logic: "Drives PEOPLE crazy (frustrates)." }
+    ]
+  },
+  {
+    id: "discursive-desultory",
+    title: "Discursive vs. Desultory",
+    icon: "🏃",
+    description: "Running vs. Jumping",
+    pair: [
+      { wordId: "discursive", role: "The Runner", logic: "Covers ground. Connected flow." },
+      { wordId: "desultory", role: "The Jumper", logic: "Skips around. Random and lazy." }
+    ]
+  },
+  {
+    id: "hidden-knowledge",
+    title: "Recondite vs. Arcane vs. Obscure",
+    icon: "📜",
+    description: "Three ways to hide the truth",
+    pair: [
+      { wordId: "recondite", role: "The Buried", logic: "Hidden by complexity/depth." },
+      { wordId: "arcane", role: "The Locked", logic: "Hidden by secrecy/rituals." },
+      { wordId: "obscure", role: "The Shadowed", logic: "Hidden by darkness/lack of fame." }
+    ]
+  },
+    {
+    id: "ascribe-attribute",
+    title: "Ascribe vs. Attribute",
+    icon: "✍️",
+    description: "Writing vs. Giving",
+    pair: [
+      { wordId: "ascribe", role: "The Writer", logic: "Subjective. 'I write your name next to this.'" },
+      { wordId: "attribute", role: "The Giver", logic: "Logical. 'I assign the cause to this.'" }
+    ]
+  }
+];
+
+// ==========================================
+// 3. THE COMPONENTS
+// ==========================================
+
+const WordCard = ({ data }: { data: any }) => (
+  <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col h-full">
+    <div className="flex justify-between items-start mb-3">
+      <h3 className="text-2xl font-serif font-bold text-slate-800">{data.word}</h3>
+      <span className="text-xs font-mono bg-slate-100 text-slate-500 px-2 py-1 rounded">
+        {data.id}
+      </span>
+    </div>
+    
+    <div className="mb-4">
+      <div className="flex items-center gap-2 text-indigo-600 font-medium text-sm mb-1">
+        <GitBranch size={16} />
+        <span>{data.root}</span>
+      </div>
+      <p className="text-slate-600 text-sm italic">{data.etymology}</p>
+    </div>
+
+    <div className="bg-slate-50 p-3 rounded-lg mb-4 border-l-4 border-indigo-400">
+      <div className="flex items-center gap-2 text-slate-700 font-semibold text-sm mb-1">
+        <Lightbulb size={16} />
+        <span>The Vibe</span>
+      </div>
+      <p className="text-slate-700 text-sm">{data.vibe}</p>
+    </div>
+
+    <div className="flex-grow">
+        <p className="text-slate-600 text-sm mb-4">"{data.sentence}"</p>
+    </div>
+
+    <div className="mt-auto pt-4 border-t border-slate-100 space-y-2">
+      <div className="flex items-center gap-2 text-xs text-slate-500">
+        <Scale size={14} />
+        <span>Synonyms: {data.synonyms.join(", ")}</span>
+      </div>
+      <div className="flex items-center gap-2 text-xs text-emerald-600">
+        <Globe size={14} />
+        <span>IT: {data.italian}</span>
+      </div>
+    </div>
+  </div>
+);
+
+const ComparisonCard = ({ data, vocabMap }: { data: any, vocabMap: any }) => (
+  <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="bg-slate-50 p-4 border-b border-slate-200 flex items-center gap-3">
+      <span className="text-2xl">{data.icon}</span>
+      <div>
+        <h3 className="text-lg font-bold text-slate-800">{data.title}</h3>
+        <p className="text-sm text-slate-500">{data.description}</p>
+      </div>
+    </div>
+    
+    <div className={`grid grid-cols-1 md:grid-cols-${data.pair.length} divide-y md:divide-y-0 md:divide-x divide-slate-100`}>
+      {data.pair.map((item: any, idx: number) => {
+        const wordData = vocabMap.get(item.wordId);
+        return (
+          <div key={idx} className="p-5">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-serif text-xl font-bold text-indigo-700">{wordData?.word}</span>
+              <ArrowRight size={16} className="text-slate-300" />
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">{item.role}</span>
+            </div>
+            <p className="text-sm text-slate-700 leading-relaxed mb-3">{item.logic}</p>
+            <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded">
+                Root: <span className="font-medium">{wordData?.root}</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);
+
+// ==========================================
+// 4. MAIN APP COMPONENT
+// ==========================================
+
+export default function EtymologistApp() {
+  const [activeTab, setActiveTab] = useState("lexicon");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Create a map for easy lookup in comparisons
+  const vocabMap = useMemo(() => {
+    const map = new Map();
+    VOCABULARY.forEach(item => map.set(item.id, item));
+    return map;
+  }, []);
+
+  // Filter vocabulary based on search
+  const filteredVocab = VOCABULARY.filter(item => 
+    item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.root.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.vibe.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100">
+      
+      {/* Header */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Feather className="text-indigo-600" />
+            <h1 className="text-xl font-serif font-bold text-slate-900 tracking-tight">The Etymologist</h1>
+          </div>
+          
+          <nav className="flex space-x-1 bg-slate-100 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab("lexicon")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                activeTab === "lexicon" 
+                  ? "bg-white text-indigo-600 shadow-sm" 
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              Lexicon
+            </button>
+            <button
+              onClick={() => setActiveTab("comparisons")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                activeTab === "comparisons" 
+                  ? "bg-white text-indigo-600 shadow-sm" 
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+            >
+              Comparisons
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Lexicon View */}
+        {activeTab === "lexicon" && (
+          <div className="space-y-6">
+            <div className="relative max-w-md mx-auto md:mx-0">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search roots, words, or vibes..."
+                className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredVocab.map((item) => (
+                <WordCard key={item.id} data={item} />
+              ))}
+            </div>
+            
+            {filteredVocab.length === 0 && (
+              <div className="text-center py-12 text-slate-500">
+                No words found. Try searching for "bite" or "run".
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Comparisons View */}
+        {activeTab === "comparisons" && (
+          <div className="space-y-8 max-w-3xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-serif font-bold text-slate-800 mb-2">The Battleground</h2>
+              <p className="text-slate-600">Distinguishing between commonly confused roots.</p>
+            </div>
+            
+            {COMPARISONS.map((comp) => (
+              <ComparisonCard key={comp.id} data={comp} vocabMap={vocabMap} />
+            ))}
+          </div>
+        )}
+
+      </main>
+
+      <footer className="bg-white border-t border-slate-200 mt-12 py-8">
+        <div className="max-w-5xl mx-auto px-4 text-center text-slate-400 text-sm">
+          <p>Rooted in Latin. Built with React.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
