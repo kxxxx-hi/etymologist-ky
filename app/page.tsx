@@ -344,22 +344,22 @@ const COMPARISONS = [
 
 const WordCard = ({ data }: { data: any }) => (
   <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 flex flex-col h-full">
-    <div className="flex justify-between items-start mb-3">
-      <h3 className="text-2xl font-serif font-bold text-slate-800">{data.word}</h3>
-      <span className="text-xs font-mono bg-slate-100 text-slate-500 px-2 py-1 rounded">
+    <div className="flex justify-between items-start mb-4">
+      <h3 className="text-3xl font-serif font-bold text-blue-900">{data.word}</h3>
+      <span className="text-xs font-mono bg-slate-100 text-slate-500 px-2 py-1 rounded-full">
         {data.id}
       </span>
     </div>
     
     <div className="mb-4">
-      <div className="flex items-center gap-2 text-indigo-600 font-medium text-sm mb-1">
+      <div className="flex items-center gap-2 text-blue-600 font-medium text-sm mb-2">
         <GitBranch size={16} />
         <span>{data.root}</span>
       </div>
-      <p className="text-slate-600 text-sm italic">{data.etymology}</p>
+      <p className="text-slate-600 text-sm leading-relaxed">{data.etymology}</p>
     </div>
 
-    <div className="bg-slate-50 p-3 rounded-lg mb-4 border-l-4 border-indigo-400">
+    <div className="bg-slate-50 p-4 rounded-lg mb-4 border-l-4 border-blue-500">
       <div className="flex items-center gap-2 text-slate-700 font-semibold text-sm mb-1">
         <Lightbulb size={16} />
         <span>The Vibe</span>
@@ -367,8 +367,8 @@ const WordCard = ({ data }: { data: any }) => (
       <p className="text-slate-700 text-sm">{data.vibe}</p>
     </div>
 
-    <div className="flex-grow">
-        <p className="text-slate-600 text-sm mb-4">"{data.sentence}"</p>
+    <div className="flex-grow mb-4">
+        <p className="text-slate-600 text-sm leading-relaxed">"{data.sentence}"</p>
     </div>
 
     <div className="mt-auto pt-4 border-t border-slate-100 space-y-2">
@@ -438,60 +438,63 @@ export default function EtymologistApp() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-indigo-100">
+    <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-indigo-100">
       
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Feather className="text-indigo-600" />
-            <h1 className="text-xl font-serif font-bold text-slate-900 tracking-tight">The Etymologist</h1>
-          </div>
-          
-          <nav className="flex space-x-1 bg-slate-100 p-1 rounded-lg">
-            <button
-              onClick={() => setActiveTab("lexicon")}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
-                activeTab === "lexicon" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              Lexicon
-            </button>
-            <button
-              onClick={() => setActiveTab("comparisons")}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
-                activeTab === "comparisons" 
-                  ? "bg-white text-indigo-600 shadow-sm" 
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              Comparisons
-            </button>
-          </nav>
-        </div>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Lexicon View */}
-        {activeTab === "lexicon" && (
-          <div className="space-y-6">
-            <div className="relative max-w-md mx-auto md:mx-0">
+        {/* Title and Tabs Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Feather className="text-indigo-600" size={32} />
+              <h1 className="text-4xl font-serif font-bold text-slate-900 tracking-tight">The Etymologist</h1>
+            </div>
+            
+            <nav className="flex space-x-1 bg-slate-100 p-1 rounded-lg">
+              <button
+                onClick={() => setActiveTab("lexicon")}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  activeTab === "lexicon" 
+                    ? "bg-blue-500 text-white shadow-sm" 
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                Lexicon
+              </button>
+              <button
+                onClick={() => setActiveTab("comparisons")}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  activeTab === "comparisons" 
+                    ? "bg-blue-500 text-white shadow-sm" 
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                Comparisons
+              </button>
+            </nav>
+          </div>
+
+          {/* Search Bar */}
+          {activeTab === "lexicon" && (
+            <div className="relative max-w-2xl">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-slate-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search roots, words, or vibes..."
-                className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          )}
+        </div>
+        
+        {/* Lexicon View */}
+        {activeTab === "lexicon" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredVocab.map((item) => (
                 <WordCard key={item.id} data={item} />
               ))}
@@ -520,12 +523,6 @@ export default function EtymologistApp() {
         )}
 
       </main>
-
-      <footer className="bg-white border-t border-slate-200 mt-12 py-8">
-        <div className="max-w-5xl mx-auto px-4 text-center text-slate-400 text-sm">
-          <p>Rooted in Latin. Built with React.</p>
-        </div>
-      </footer>
     </div>
   );
 }
