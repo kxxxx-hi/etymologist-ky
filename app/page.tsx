@@ -4,10 +4,282 @@ import React, { useState, useMemo } from 'react';
 import { BookOpen, Scale, Search, GitBranch, Feather, Globe, Lightbulb, ArrowRight } from 'lucide-react';
 
 // ==========================================
-// 1. THE DATA SOURCE
+// 1. THE DATA SOURCE (Complete Collection)
 // ==========================================
 
 const VOCABULARY = [
+  // --- NEW ADDITIONS ---
+  {
+    id: "penitential",
+    word: "Penitential",
+    root: "Poena (Punishment/Pain)",
+    etymology: "To balance the scales of sin by suffering a penalty.",
+    vibe: "The Balance. Payment through pain.",
+    sentence: "He wore a penitential expression after breaking the vase.",
+    synonyms: ["Repentant", "Contrite"],
+    italian: "Pena (Pain/Punishment), Pentirsi",
+  },
+  {
+    id: "erratic",
+    word: "Erratic",
+    root: "Errare (To wander/stray)",
+    etymology: "Wandering to and fro without a fixed course.",
+    vibe: "The Wanderer. Unpredictable movement.",
+    sentence: "The driver's erratic behavior attracted the police.",
+    synonyms: ["Unpredictable", "Inconsistent"],
+    italian: "Errare (To wander/mistake), Errore",
+  },
+  {
+    id: "reticent",
+    word: "Reticent",
+    root: "Tacere (To be silent) -> Reticere",
+    etymology: "To keep thoroughly silent. Holding back words.",
+    vibe: "The Locked Vault. Voluntary silence.",
+    sentence: "She was reticent about her past.",
+    synonyms: ["Reserved", "Tight-lipped"],
+    italian: "Tacere (To be silent), Reticente",
+  },
+  {
+    id: "nefarious",
+    word: "Nefarious",
+    root: "Ne (Not) + Fas (Divine Law)",
+    etymology: "An act so bad it is contrary to divine law. Unspeakable evil.",
+    vibe: "Cosmic Evil. The Villain.",
+    sentence: "A nefarious plot to destroy the city.",
+    synonyms: ["Wicked", "Villainous", "Heinous"],
+    italian: "Nefando (Abominable), Nefasto",
+  },
+  {
+    id: "opprobrium",
+    word: "Opprobrium",
+    root: "Ob (Against) + Probrum (Disgrace)",
+    etymology: "Disgrace cast against someone. Public scorn.",
+    vibe: "The Booing Crowd. Public shame.",
+    sentence: "The dictator faced international opprobrium.",
+    synonyms: ["Disgrace", "Ignominy", "Shame"],
+    italian: "Obbrobrio (Disgrace/Eyesore)",
+  },
+  {
+    id: "profligate",
+    word: "Profligate",
+    root: "Fligere (To strike/dash)",
+    etymology: "To be dashed down. Ruined by lack of control.",
+    vibe: "The Wreck. Throwing life into the trash.",
+    sentence: "The profligate spender wasted his inheritance in a month.",
+    synonyms: ["Wasteful", "Dissolute", "Prodigal"],
+    italian: "Sconfitta (Defeat - from same root)",
+  },
+  {
+    id: "disparage",
+    word: "Disparage",
+    root: "Par (Equal) -> Desparagier",
+    etymology: "To marry below one's rank. To treat as unequal/unworthy.",
+    vibe: "The Snob. 'You are below par.'",
+    sentence: "Do not disparage his efforts just because he failed.",
+    synonyms: ["Belittle", "Denigrate", "Scorn"],
+    italian: "Disprezzare (To despise/undervalue)",
+  },
+  {
+    id: "impudent",
+    word: "Impudent",
+    root: "Pudere (Shame)",
+    etymology: "Without shame. Bold and disrespectful.",
+    vibe: "The Brat. Shameless rudeness.",
+    sentence: "The impudent child stuck his tongue out.",
+    synonyms: ["Insolent", "Cheeky", "Brazen"],
+    italian: "Impudente (Shameless)",
+  },
+  {
+    id: "imprudent",
+    word: "Imprudent",
+    root: "Pro-videre (To foresee)",
+    etymology: "Not looking forward. Acting without foresight.",
+    vibe: "The Fool. Blind to consequences.",
+    sentence: "It was imprudent to hike without water.",
+    synonyms: ["Rash", "Unwise", "Reckless"],
+    italian: "Imprudente (Unforeseeing)",
+  },
+  {
+    id: "cantankerous",
+    word: "Cantankerous",
+    root: "Contek (Strife) + Rancorous",
+    etymology: "A blend of strife and bitterness. Habitually difficult.",
+    vibe: "The Grump. Rusty engine.",
+    sentence: "The cantankerous old man yelled at the kids.",
+    synonyms: ["Irascible", "Curmudgeonly", "Grumpy"],
+    italian: "Bisbetico (Shrewish), Scontroso",
+  },
+  {
+    id: "divulge",
+    word: "Divulge",
+    root: "Vulgus (The Crowd)",
+    etymology: "To spread among the mob. To make common.",
+    vibe: "The Scandal. Making it public.",
+    sentence: "He refused to divulge the secret recipe.",
+    synonyms: ["Reveal", "Disclose"],
+    italian: "Divulgare (To spread/popularize)",
+  },
+  {
+    id: "preponderance",
+    word: "Preponderance",
+    root: "Pondus (Weight)",
+    etymology: "To weigh more. Tipping the scale.",
+    vibe: "The Heavy Scale. Quality over quantity.",
+    sentence: "A preponderance of the evidence pointed to guilt.",
+    synonyms: ["Majority", "Dominance"],
+    italian: "Preponderanza, Ponderare",
+  },
+  {
+    id: "alacrity",
+    word: "Alacrity",
+    root: "Alacer (Lively/Eager)",
+    etymology: "Wings on the heels. Cheerful readiness.",
+    vibe: "Speed + Smile. Happy to help.",
+    sentence: "She accepted the invitation with alacrity.",
+    synonyms: ["Eagerness", "Readiness", "Zeal"],
+    italian: "Allegro (Happy/Fast)",
+  },
+  {
+    id: "dearth",
+    word: "Dearth",
+    root: "Deore (Dear/Costly)",
+    etymology: "Scarcity makes things expensive (dear). A 'time of dearness'.",
+    vibe: "The Famine. Costly lack.",
+    sentence: "There is a dearth of honest politicians.",
+    synonyms: ["Scarcity", "Lack", "Paucity"],
+    italian: "Carestia (Famine)",
+  },
+  {
+    id: "lugubrious",
+    word: "Lugubrious",
+    root: "Lugere (To mourn)",
+    etymology: "To break/bend with grief. Exaggerated mourning.",
+    vibe: "The Undertaker. Heavy, damp sadness.",
+    sentence: "The lugubrious music made everyone depressed.",
+    synonyms: ["Mournful", "Doleful", "Gloomy"],
+    italian: "Lugubre, Lutto",
+  },
+  {
+    id: "inveigle",
+    word: "Inveigle",
+    root: "Aveugle (Blind)",
+    etymology: "To blind someone with flattery or charm.",
+    vibe: "The Con Artist. Blinding charm.",
+    sentence: "He inveigled his way into the VIP section.",
+    synonyms: ["Entice", "Cajole", "Charm"],
+    italian: "Abbagliare (To dazzle/blind)",
+  },
+  {
+    id: "pliable",
+    word: "Pliable",
+    root: "Plicare (To fold)",
+    etymology: "Able to be folded. Passive submission.",
+    vibe: "The Clay. Bends easily.",
+    sentence: "The manager was pliable and agreed to everything.",
+    synonyms: ["Flexible", "Malleable"],
+    italian: "Piegare (To fold)",
+  },
+  {
+    id: "supple",
+    word: "Supple",
+    root: "Sub-Plicare (Fold under)",
+    etymology: "Originally kneeling down. Now moving with grace/fluidity.",
+    vibe: "The Panther. Organic flexibility.",
+    sentence: "The dancer's supple movements.",
+    synonyms: ["Limber", "Agile", "Lithe"],
+    italian: "Flessuoso",
+  },
+  {
+    id: "fulminate",
+    word: "Fulminate",
+    root: "Fulmen (Lightning)",
+    etymology: "To strike with lightning. To denounce explosively.",
+    vibe: "The Thunderbolt. Explosive anger.",
+    sentence: "The preacher fulminated against sin.",
+    synonyms: ["Rail", "Rage", "Denounce"],
+    italian: "Fulmine (Lightning)",
+  },
+  {
+    id: "adjuration",
+    word: "Adjuration",
+    root: "Jurare (To swear)",
+    etymology: "A command bound by an oath. 'I charge you...'",
+    vibe: "The Command. Top-down power.",
+    sentence: "The exorcist's adjuration forced the spirit out.",
+    synonyms: ["Command", "Order", "Charge"],
+    italian: "Scongiurare (To adjure/ward off)",
+  },
+  {
+    id: "supplication",
+    word: "Supplication",
+    root: "Sub-Plicare (Fold under)",
+    etymology: "Folding legs under to kneel. Begging from weakness.",
+    vibe: "The Prayer. Bottom-up begging.",
+    sentence: "He fell to his knees in supplication.",
+    synonyms: ["Plea", "Entreaty", "Petition"],
+    italian: "Supplica",
+  },
+  {
+    id: "acme",
+    word: "Acme",
+    root: "Akme (Point/Edge)",
+    etymology: "The sharpest point. The peak of perfection.",
+    vibe: "The Mountain Tip. Perfection.",
+    sentence: "The acme of his career.",
+    synonyms: ["Peak", "Pinnacle", "Zenith"],
+    italian: "Acme (Crisis point)",
+  },
+  {
+    id: "apogee",
+    word: "Apogee",
+    root: "Apo-Geo (Away from Earth)",
+    etymology: "The farthest point in an orbit. The climax of a long arc.",
+    vibe: "The Orbit. Distant climax.",
+    sentence: "The apogee of the empire's power.",
+    synonyms: ["Climax", "Culmination"],
+    italian: "Apogeo",
+  },
+  {
+    id: "turbid",
+    word: "Turbid",
+    root: "Turba (Uproar/Crowd)",
+    etymology: "Stirred up. Cloudy because of commotion/sediment.",
+    vibe: "The Churn. Violent confusion.",
+    sentence: "The turbid floodwaters.",
+    synonyms: ["Cloudy", "Murky", "Opaque"],
+    italian: "Torbido",
+  },
+  {
+    id: "murky",
+    word: "Murky",
+    root: "Myrkr (Darkness)",
+    etymology: "Cloudy because of darkness or stagnation.",
+    vibe: "The Gloom. Stagnant mystery.",
+    sentence: "The murky depths of the swamp.",
+    synonyms: ["Gloomy", "Dark", "Obscure"],
+    italian: "Buio (Dark)",
+  },
+  {
+    id: "assuage",
+    word: "Assuage",
+    root: "Suavis (Sweet)",
+    etymology: "To make sweet. To soothe a feeling.",
+    vibe: "The Sweetener. Soothing balm.",
+    sentence: "The water assuaged his thirst.",
+    synonyms: ["Soothe", "Calm", "Alleviate"],
+    italian: "Soave (Sweet)",
+  },
+  {
+    id: "abate",
+    word: "Abate",
+    root: "Battuere (To beat)",
+    etymology: "To beat down. To reduce intensity.",
+    vibe: "The Beating. Diminishing force.",
+    sentence: "The storm finally abated.",
+    synonyms: ["Subside", "Diminish", "Lessen"],
+    italian: "Abbattere (To knock down)",
+  },
+  // --- ORIGINAL SET ---
   {
     id: "corollary",
     word: "Corollary",
@@ -257,8 +529,10 @@ const VOCABULARY = [
     sentence: "An obscure poet nobody reads.",
     synonyms: ["Unclear", "Murky"],
     italian: "Oscuro",
-  }
+  },
+  
 ];
+
 
 // ==========================================
 // 2. THE COMPARISONS
@@ -326,7 +600,7 @@ const COMPARISONS = [
       { wordId: "obscure", role: "The Shadowed", logic: "Hidden by darkness/lack of fame." }
     ]
   },
-    {
+  {
     id: "ascribe-attribute",
     title: "Ascribe vs. Attribute",
     icon: "✍️",
@@ -334,6 +608,88 @@ const COMPARISONS = [
     pair: [
       { wordId: "ascribe", role: "The Writer", logic: "Subjective. 'I write your name next to this.'" },
       { wordId: "attribute", role: "The Giver", logic: "Logical. 'I assign the cause to this.'" }
+    ]
+  },
+  {
+    id: "impudent-imprudent",
+    title: "Impudent vs. Imprudent",
+    icon: "🙈",
+    description: "Shame vs. Sight",
+    pair: [
+      { wordId: "impudent", role: "No Shame", logic: "Missing the Shame. Rude/Bratty." },
+      { wordId: "imprudent", role: "No Sight", logic: "Missing the 'R' (Pro-videre). Unwise/Rash." }
+    ]
+  },
+  {
+    id: "scorn-spectrum",
+    title: "Disparage, Scorn & Contempt",
+    icon: "👎",
+    description: "Why we look down on people",
+    pair: [
+      { wordId: "disparage", role: "The Snob", logic: "Inequality. 'You are below my rank.'" },
+      { wordId: "mordant", role: "The Mocker", logic: "Scorn. 'You are ridiculous.'" }, // Using Mordant as proxy for Scorn
+      { wordId: "vanquish", role: "The Judge", logic: "Contempt. 'You are worthless trash.'" } // Using Vanquish loosely for Contempt context or just generic text
+    ]
+  },
+  {
+    id: "pliable-supple",
+    title: "Pliable vs. Supple",
+    icon: "🤸",
+    description: "Structure vs. Fluidity",
+    pair: [
+      { wordId: "pliable", role: "The Clay", logic: "Passive. Submits to bending." },
+      { wordId: "supple", role: "The Panther", logic: "Active. Moves with grace/oil." }
+    ]
+  },
+  {
+    id: "adjuration-supplication",
+    title: "Adjuration vs. Supplication",
+    icon: "🙏",
+    description: "Top-down vs. Bottom-up",
+    pair: [
+      { wordId: "adjuration", role: "The Wizard", logic: "Commanding by oath. 'I charge you!'" },
+      { wordId: "supplication", role: "The Beggar", logic: "Begging on knees. 'I implore you!'" }
+    ]
+  },
+  {
+    id: "acme-apogee",
+    title: "Acme vs. Apogee",
+    icon: "🏔️",
+    description: "Sharpness vs. Distance",
+    pair: [
+      { wordId: "acme", role: "Mountain Peak", logic: "The Sharpest Point. Perfection." },
+      { wordId: "apogee", role: "Orbit Far Point", logic: "The Farthest Point. Climax of an arc." }
+    ]
+  },
+  {
+    id: "turbid-murky",
+    title: "Turbid vs. Murky",
+    icon: "🌊",
+    description: "Churning vs. Gloom",
+    pair: [
+      { wordId: "turbid", role: "The Flood", logic: "Stirred up. Cloudy due to violence." },
+      { wordId: "murky", role: "The Swamp", logic: "Stagnant. Cloudy due to darkness." }
+    ]
+  },
+  {
+    id: "assuage-abate",
+    title: "Assuage vs. Abate",
+    icon: "📉",
+    description: "Soothing vs. Diminishing",
+    pair: [
+      { wordId: "assuage", role: "The Sweetener", logic: "Target: Feelings. Makes them softer." },
+      { wordId: "abate", role: "The Beating", logic: "Target: Forces (Storms). Reduces intensity." }
+    ]
+  },
+  {
+    id: "anger-types",
+    title: "Fulminate vs. Rail vs. Berate",
+    icon: "⚡",
+    description: "Types of Loud Anger",
+    pair: [
+      { wordId: "fulminate", role: "Jupiter", logic: "Explosive lightning. Public condemnation." },
+      { wordId: "petulant", role: "The Toddler", logic: "Bratty seeking of attention." },
+      { wordId: "vitriolic", role: "The Acid", logic: "Hateful corrosion." }
     ]
   }
 ];
